@@ -94,6 +94,7 @@ void CMFCView::OnFileWritefile()
 		CFile file(path, CFile::modeWrite | CFile::modeCreate);
 		int len = str.GetLength() * sizeof(TCHAR);
 		file.Write(str, len);
+		file.Close();
 	}
 }
 
@@ -110,7 +111,8 @@ void CMFCView::OnFileReadfile()
 		buf = new TCHAR[len + 1];
 		buf[len] = 0;
 		file.Read(buf, file.GetLength());
-		MessageBox(CString(buf, len));
+		MessageBox(buf);
 		delete[] buf;
+		file.Close();
 	}
 }
