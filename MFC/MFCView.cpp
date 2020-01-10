@@ -25,6 +25,10 @@ IMPLEMENT_DYNCREATE(CMFCView, CView)
 BEGIN_MESSAGE_MAP(CMFCView, CView)
 	ON_COMMAND(ID_FILE_WRITEFILE, &CMFCView::OnFileWritefile)
 	ON_COMMAND(ID_FILE_READFILE, &CMFCView::OnFileReadfile)
+	ON_WM_LBUTTONDOWN()
+	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONUP()
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 // CMFCView construction/destruction
@@ -32,7 +36,7 @@ END_MESSAGE_MAP()
 CMFCView::CMFCView() noexcept
 {
 	// TODO: add construction code here
-
+	isDraw = FALSE;
 }
 
 CMFCView::~CMFCView()
@@ -114,5 +118,62 @@ void CMFCView::OnFileReadfile()
 		MessageBox(buf);
 		delete[] buf;
 		file.Close();
+	}
+}
+
+
+void CMFCView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	isDraw = TRUE;
+	begin = point;
+	points.addPoint(point);
+
+	CView::OnLButtonDown(nFlags, point);
+}
+
+
+void CMFCView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	if (isDraw) {
+		CClientDC cdc(this);
+		cdc.MoveTo(begin);
+		cdc.LineTo(point);
+		begin = point;
+		points.addPoint(point);
+	}
+	CView::OnMouseMove(nFlags, point);
+}
+
+
+void CMFCView::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	isDraw = FALSE;
+	points.addPoint(point);
+
+	CView::OnLButtonUp(nFlags, point);
+}
+
+
+void CMFCView::OnPaint()
+{
+	CPaintDC dc(this); // device context for painting
+					   // TODO: Add your message handler code here
+					   // Do not call CView::OnPaint() for painting messages
+	const CArray<CPoint>& points = this->points.getPoints();
+	int len = points.GetSize();
+	for (int i = 0; i < len; i++) {
+		CPoint point1 = points.GetAt(i);
+		dc.MoveTo(point1);
+		if (i + 1 < len) {
+			CPoint point2 = points.GetAt(i + 1);
+			if (point1 == point2) {
+				i++;
+				continue;
+			}
+			dc.LineTo(point2);
+		}
 	}
 }
