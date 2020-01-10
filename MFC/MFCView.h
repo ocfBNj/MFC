@@ -37,6 +37,9 @@ protected:
 // Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnFileWritefile();
+	afx_msg void OnFileReadfile();
 };
 
 #ifndef _DEBUG  // debug version in MFCView.cpp

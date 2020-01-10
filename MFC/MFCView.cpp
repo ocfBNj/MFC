@@ -23,6 +23,8 @@
 IMPLEMENT_DYNCREATE(CMFCView, CView)
 
 BEGIN_MESSAGE_MAP(CMFCView, CView)
+	ON_COMMAND(ID_FILE_WRITEFILE, &CMFCView::OnFileWritefile)
+	ON_COMMAND(ID_FILE_READFILE, &CMFCView::OnFileReadfile)
 END_MESSAGE_MAP()
 
 // CMFCView construction/destruction
@@ -80,3 +82,35 @@ CMFCDoc* CMFCView::GetDocument() const // non-debug version is inline
 
 
 // CMFCView message handlers
+
+
+void CMFCView::OnFileWritefile()
+{
+	// TODO: Add your command handler code here
+	CString str = CString("Hello World!");
+	CFileDialog dialog(FALSE);
+	if (IDOK == dialog.DoModal()) {
+		CString path = dialog.GetPathName();
+		CFile file(path, CFile::modeWrite | CFile::modeCreate);
+		int len = str.GetLength() * sizeof(TCHAR);
+		file.Write(str, len);
+	}
+}
+
+
+void CMFCView::OnFileReadfile()
+{
+	// TODO: Add your command handler code here
+	CFileDialog dialog(TRUE);
+	if (IDOK == dialog.DoModal()) {
+		TCHAR* buf = NULL;
+		CString path = dialog.GetPathName();
+		CFile file(path, CFile::modeRead);
+		int len = file.GetLength() / sizeof(TCHAR);
+		buf = new TCHAR[len + 1];
+		buf[len] = 0;
+		file.Read(buf, file.GetLength());
+		MessageBox(CString(buf, len));
+		delete[] buf;
+	}
+}

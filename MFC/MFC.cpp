@@ -118,6 +118,8 @@ protected:
 // Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+//	afx_msg void OnFileWritefile();
 };
 
 CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
@@ -130,6 +132,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+//	ON_COMMAND(ID_FILE_WRITEFILE, &CAboutDlg::OnFileWritefile)
 END_MESSAGE_MAP()
 
 // App command to run the dialog
@@ -143,3 +146,9 @@ void CMFCApp::OnAppAbout()
 
 
 
+
+
+//void CAboutDlg::OnFileWritefile()
+//{
+//	// TODO: Add your command handler code here
+//}
