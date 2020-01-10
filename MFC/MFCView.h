@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Line.h"
+
 
 class CMFCView : public CView
 {
@@ -34,12 +36,21 @@ public:
 
 protected:
 
+private:
+	CPoint begin;
+	BOOL isDraw;
+	Points points;
+
 // Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnFileWritefile();
 	afx_msg void OnFileReadfile();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnPaint();
 };
 
 #ifndef _DEBUG  // debug version in MFCView.cpp
