@@ -31,7 +31,7 @@ END_MESSAGE_MAP()
 CMFCDoc::CMFCDoc() noexcept
 {
 	// TODO: add one-time construction code here
-
+	isDraw = FALSE;
 }
 
 CMFCDoc::~CMFCDoc()
@@ -45,6 +45,8 @@ BOOL CMFCDoc::OnNewDocument()
 
 	// TODO: add reinitialization code here
 	// (SDI documents will reuse this document)
+	isDraw = FALSE;
+	points.clear();
 
 	return TRUE;
 }
@@ -59,10 +61,12 @@ void CMFCDoc::Serialize(CArchive& ar)
 	if (ar.IsStoring())
 	{
 		// TODO: add storing code here
+		this->points.Serialize(ar);
 	}
 	else
 	{
 		// TODO: add loading code here
+		this->points.Serialize(ar);
 	}
 }
 

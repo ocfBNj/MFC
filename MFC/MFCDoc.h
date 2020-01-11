@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "Line.h"
+
 
 class CMFCDoc : public CDocument
 {
@@ -14,6 +16,9 @@ protected: // create from serialization only
 
 // Attributes
 public:
+	CPoint begin;
+	BOOL isDraw;
+	Points points;
 
 // Operations
 public:

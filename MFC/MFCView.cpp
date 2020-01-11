@@ -28,7 +28,6 @@ BEGIN_MESSAGE_MAP(CMFCView, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONUP()
-	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 // CMFCView construction/destruction
@@ -36,7 +35,7 @@ END_MESSAGE_MAP()
 CMFCView::CMFCView() noexcept
 {
 	// TODO: add construction code here
-	isDraw = FALSE;
+	
 }
 
 CMFCView::~CMFCView()
@@ -53,14 +52,27 @@ BOOL CMFCView::PreCreateWindow(CREATESTRUCT& cs)
 
 // CMFCView drawing
 
-void CMFCView::OnDraw(CDC* /*pDC*/)
+void CMFCView::OnDraw(CDC* pDC)
 {
 	CMFCDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
 
-	// TODO: add draw code for native data here
+	const CArray<CPoint>& points = pDoc->points.getPoints();
+	int len = points.GetSize();
+	for (int i = 0; i < len; i++) {
+		CPoint point1 = points.GetAt(i);
+		pDC->MoveTo(point1);
+		if (i + 1 < len) {
+			CPoint point2 = points.GetAt(i + 1);
+			if (point1 == point2) {
+				i++;
+				continue;
+			}
+			pDC->LineTo(point2);
+		}
+	}
 }
 
 
@@ -111,7 +123,7 @@ void CMFCView::OnFileReadfile()
 		TCHAR* buf = NULL;
 		CString path = dialog.GetPathName();
 		CFile file(path, CFile::modeRead);
-		int len = file.GetLength() / sizeof(TCHAR);
+		ULONGLONG len = file.GetLength() / sizeof(TCHAR);
 		buf = new TCHAR[len + 1];
 		buf[len] = 0;
 		file.Read(buf, file.GetLength());
@@ -124,10 +136,10 @@ void CMFCView::OnFileReadfile()
 
 void CMFCView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
-	isDraw = TRUE;
-	begin = point;
-	points.addPoint(point);
+	CMFCDoc* pDoc = GetDocument();
+	pDoc->isDraw = TRUE;
+	pDoc->begin = point;
+	pDoc->points.addPoint(point);
 
 	CView::OnLButtonDown(nFlags, point);
 }
@@ -136,12 +148,13 @@ void CMFCView::OnLButtonDown(UINT nFlags, CPoint point)
 void CMFCView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	if (isDraw) {
+	CMFCDoc* pDoc = GetDocument();
+	if (pDoc->isDraw) {
 		CClientDC cdc(this);
-		cdc.MoveTo(begin);
+		cdc.MoveTo(pDoc->begin);
 		cdc.LineTo(point);
-		begin = point;
-		points.addPoint(point);
+		pDoc->begin = point;
+		pDoc->points.addPoint(point);
 	}
 	CView::OnMouseMove(nFlags, point);
 }
@@ -149,31 +162,9 @@ void CMFCView::OnMouseMove(UINT nFlags, CPoint point)
 
 void CMFCView::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
-	isDraw = FALSE;
-	points.addPoint(point);
+	CMFCDoc* pDoc = GetDocument();
+	pDoc->isDraw = FALSE;
+	pDoc->points.addPoint(point);
 
 	CView::OnLButtonUp(nFlags, point);
-}
-
-
-void CMFCView::OnPaint()
-{
-	CPaintDC dc(this); // device context for painting
-					   // TODO: Add your message handler code here
-					   // Do not call CView::OnPaint() for painting messages
-	const CArray<CPoint>& points = this->points.getPoints();
-	int len = points.GetSize();
-	for (int i = 0; i < len; i++) {
-		CPoint point1 = points.GetAt(i);
-		dc.MoveTo(point1);
-		if (i + 1 < len) {
-			CPoint point2 = points.GetAt(i + 1);
-			if (point1 == point2) {
-				i++;
-				continue;
-			}
-			dc.LineTo(point2);
-		}
-	}
 }
