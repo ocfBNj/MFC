@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Line.h"
 
+IMPLEMENT_SERIAL(Points, CObject, 1);
+
 void Points::addPoint(const CPoint& point)
 {
 	points.Add(point);

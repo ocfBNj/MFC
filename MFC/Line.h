@@ -5,6 +5,7 @@
 class Points :
 	public CObject
 {
+	DECLARE_SERIAL(Points);
 public:
 	void addPoint(const CPoint& point);
 	void clear();
